@@ -9,9 +9,10 @@ def get_random_word():
 
 
 def display_game_state(mistakes, secret_word, guessed_letters):
-    # Display the snowman stage for the current number of mistakes.
-    print(STAGES[mistakes])
-    # Build a display version of the secret word.
+    """This function displays the game state such as the current stage of ASCII art and also
+     displays the guessed letter and the letters which are not guessed yet."""
+    print(f'{STAGES[mistakes]}\n')
+
     display_word = ""
     for letter in secret_word:
         if letter in guessed_letters:
@@ -23,6 +24,14 @@ def display_game_state(mistakes, secret_word, guessed_letters):
 
 
 def play_game():
+    """
+        Run the game logic:
+        - Get a random word
+        - Prompt the user to guess letters
+        - Track mistakes and guessed letters
+        - End the game when the user either guesses the word or reaches the mistake limit
+        - Ask the user if they want to play again
+    """
     secret_word = get_random_word()
     guessed_letters = []
     mistakes = 0
@@ -33,16 +42,40 @@ def play_game():
 
     while mistakes < MAXIMUM_MISTAKES and not all(letter in guessed_letters for letter in secret_word):
         display_game_state(mistakes, secret_word, guessed_letters)
-        guess = input("Guess a letter: ").lower()
+        guess = get_validated_guess_input()
         if guess not in secret_word:
             mistakes += 1
         elif guess not in guessed_letters:
             guessed_letters.append(guess)
 
     if mistakes == MAXIMUM_MISTAKES:
-        print(f"Game Over! The word was: {secret_word}")
+        print(f"Game Over! The word was: {secret_word} \n")
         print(STAGES[-1])
     else:
-        print(f'Congratulations, you saved the snowman!')
+        print(f'Congratulations, you saved the snowman! \n')
+
+    play_again()
+
+
+def play_again():
+    """This function prompts the user to play again."""
+    user_input = input('Do you want to play again? (y/n)...\n').lower()
+    if user_input == 'y':
+        play_game()
+    else:
+        print('Thank you for playing!\n')
+        exit()
+
+
+def get_validated_guess_input():
+    """Validate that the input is a single alphabetical character."""
+    while True:
+        guess = input("Guess a letter: ").lower()
+        if len(guess) == 1 and guess.isalpha():
+            return guess
+        else:
+            print("Please enter a single alphabetical character.")
+
+
 
 
